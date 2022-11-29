@@ -1,0 +1,20 @@
+# Created by https://www.toptal.com/developers/gitignore/api/firebase,platformio
+# Edit at https://www.toptal.com/developers/gitignore?templates=firebase,platformio
+
+### Firebase ###
+.idea
+**/node_modules/*
+**/.firebaserc
+
+### Firebase Patch ###
+.runtimeconfig.json
+.firebase/
+
+### PlatformIO ###
+.pioenvs
+.piolibdeps
+.clang_complete
+.gcc-flags.json
+.pio
+
+# End of https://www.toptal.com/developers/gitignore/api/firebase,platformio

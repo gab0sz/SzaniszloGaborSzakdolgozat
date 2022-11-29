@@ -13,8 +13,8 @@
 #define API_KEY "AIzaSyDVB7yYwlxqBU92zOviE1zvpOfTZiyfPkI"
 
 // Insert Authorized Email and Corresponding Password
-#define USER_EMAIL "test@email.com"
-#define USER_PASSWORD "test123"
+#define USER_EMAIL "EMAIL"
+#define USER_PASSWORD "PASSWORD"
 
 // Insert RTDB URLefine the RTDB URL
 #define DATABASE_URL "https://fir-esp32-test-eadba-default-rtdb.europe-west1.firebasedatabase.app"

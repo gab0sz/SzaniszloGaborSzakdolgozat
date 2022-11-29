@@ -31,8 +31,8 @@ const char *password = "11112222";
 #define API_KEY "AIzaSyDVB7yYwlxqBU92zOviE1zvpOfTZiyfPkI"
 
 // Insert Authorized Email and Corresponding Password
-#define USER_EMAIL "test@email.com"
-#define USER_PASSWORD "test123"
+#define USER_EMAIL "EMAIL"
+#define USER_PASSWORD "PASSWORD"
 
 // Insert Firebase storage bucket ID e.g bucket-name.appspot.com
 #define STORAGE_BUCKET_ID "fir-esp32-test-eadba.appspot.com"

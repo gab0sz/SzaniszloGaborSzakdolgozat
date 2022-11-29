@@ -1,0 +1,296 @@
+<!-- Complete Project Details at: https://RandomNerdTutorials.com/ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESP Firebase App</title>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <!-- Google Fonts Roboto -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+  <!-- MDB -->
+  <link rel="stylesheet" href="css/mdb.dark.min.css" />
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <!-- Charts -->
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+
+
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+        https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-database.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css" />
+
+  <script>
+    // REPLACE WITH YOUR web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyDVB7yYwlxqBU92zOviE1zvpOfTZiyfPkI",
+      authDomain: "fir-esp32-test-eadba.firebaseapp.com",
+      databaseURL: "https://fir-esp32-test-eadba-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "fir-esp32-test-eadba",
+      storageBucket: "fir-esp32-test-eadba.appspot.com",
+      messagingSenderId: "538545656826",
+      appId: "1:538545656826:web:96fb1b88ca602349b90a43"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    var database = firebase.database();
+    const auth = firebase.auth();
+
+  </script>
+  <script src="auth.js" defer></script>
+  <script src="app.js" defer></script>
+  <script src="chart-definitions.js" defer></script>
+</head>
+
+<body style="background-color: rgb(19, 18, 18);">
+  <h1 style="display: flex; justify-content: center; align-items: center; margin-top: 15px;">Okosotthon kezelő felület
+  </h1>
+
+  <!--LOGIN FORM-->
+  <div class="container text-center" style="padding: 0.25rem">
+    <form id="login-form"
+      style="display: none; justify-content: center; align-items: center; font-family: Helvetica, 'FontAwesome', sans-serif;">
+      <div class="form-elements-container" style="width: 550px;">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Jelentkezzen be</h5>
+            <div class="form-group">
+              <label for="email">Email</label>
+
+              <div>
+
+                <input type="email" class="form-control" id="input-email"
+                  placeholder="&#xf0e0 Írja be az email-jét"></input>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="password">Jelszó</label>
+              <input type="password" class="form-control" id="input-password" placeholder="&#xf023 Írja be jelszavát">
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center; margin-top: 15px;">
+              <button type="submit" class="btn btn-primary" id="login-button">Bejelentkezés <i
+                  class="fa-solid fa-right-to-bracket"></i></button>
+            </div>
+          </div>
+
+          <p id="error-message" style="color:red;"></p>
+        </div>
+    </form>
+  </div>
+
+  <div class="container text-center" style="max-width: 1100px;">
+    <div class="content-sign-in" id="content-sign-in" style="display: none; ">
+      <div class="container text-center g-1" style="margin-top: 5px; ">
+        <div class="row g-1">
+          <div class="col-md-4">
+            <div class="card" style="height: 550px;">
+              <div class="card-body">
+                <h5 class="card-title">Okosotthon kezelő felület</h5>
+                <p class="card-text">Bejelentkezett felhasználó:
+                  <span id="user-details">USEREMAIL</span>
+                <p style="margin: 0px;"> Utolsó szenzoradat frissítés ideje:</p>
+                <p id="last-update">
+                  <span id="timestamp"></span>
+                  <span id="timestamp2"></span>
+                </p>
+
+                </p>
+
+                <button href="/" id="logout-link" type="button" class="btn btn-primary">Kijelentkezés <i
+                    class="fa-solid fa-right-from-bracket"></i></button>
+                <div class="form-check form-switch w-50 mx-auto" style="margin-top: 40px;">
+                  <input class="form-check-input" type="checkbox" role="switch" id="camera-switch"
+                    style="box-shadow: 1px 1px 50px rgb(137,137,137); " />
+                  <label class="form-check-label" for="camera-switch">Mozgásérzékelés és képkészítés</label>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-md-8">
+            <div class="row g-1 row-cols-1 row-cols-md-3">
+              <div class="col-md-4">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title">Hőmérséklet <i class="fas fa-thermometer-half" style="color:#059e8a;"></i>
+                    </h5>
+
+                    <p><span class="reading"><span id="temp"></span> &deg;C</span></p>
+
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title">Nyomás <i class="fas fa-angle-double-down" style="color:#e1e437;"></i></h5>
+
+                    <p><span class="reading"><span id="pres"></span> hPa</span></p>
+
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title">Páratartalom <i class="fas fa-tint" style="color:#00add6;"></i></h5>
+
+                    <p><span class="reading"><span id="hum"></span> %</span></p>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row g-1" style="margin-top: 1px;">
+              <div class="col-md-6">
+
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title">Ajtó <i class="fa-solid fa-door-closed"></i></h5>
+                    <p id="door-status" class="card-text">Az ajtó zárva van.</p>
+
+                    <div class="row row-cols-1 row-cols-md-2">
+                      <div class="col">
+                        <button id="door-button" type="button" class="btn btn-outline-primary"
+                          style="width: 100px;"></i></button>
+                      </div>
+                      <div class="col">
+
+                        <div class="form-check form-switch w-50 mx-auto p-0">
+                          <input class="form-check-input" type="checkbox" role="switch" id="rfid-checkbox"
+                            style="box-shadow: 1px 1px 50px rgb(137,137,137);" />
+                          <label class="form-check-label" for="rfid-checkbox">RFID belépés</label>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+
+                  </div>
+                </div>
+
+              </div>
+              <div class="col-md-6 ">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title">MQ135 Levegő minőség szenzor <i class="fa-solid fa-wind"></i></h5>
+                    <p class="card-text">Nem érzékelhető veszély.</p>
+                    <h5 class="card-title">SA-17 Lángérzékelő <i class="fa-solid fa-fire"></i></h5>
+                    <p class="card-text">Az érzékelő nem jelez veszélyt.</p>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row g-1" style="margin-top: 1px;">
+              <div class="col-md-6">
+                <div class="card h-100 text-center">
+                  <div class="card-body">
+                    <h5 class="card-title">Fények <i class="fa-regular fa-lightbulb"></i></h5>
+                    <div class="form-check form-switch w-50 mx-auto">
+                      <input class="form-check-input" type="checkbox" role="switch" id="kitchen-light"
+                        style="box-shadow: 1px 1px 50px rgb(137,137,137); " />
+                      <label class="form-check-label" for="kitchen-light">Konyha</label>
+                    </div>
+                    <div class="form-check form-switch w-50 mx-auto">
+                      <input class="form-check-input" type="checkbox" role="switch" id="livingroom-light"
+                        style="box-shadow: 1px 1px 50px rgb(137,137,137);" />
+                      <label class="form-check-label" for="livingroom-light">Nappali</label>
+                    </div>
+                    <div class="form-check form-switch w-50 mx-auto">
+                      <input class="form-check-input" type="checkbox" role="switch" id="hall-light"
+                        style="box-shadow: 1px 1px 50px rgb(137,137,137);" />
+                      <label class="form-check-label" for="hall-light">Folyosó</label>
+                    </div>
+                    <div class="form-check form-switch w-50 mx-auto">
+                      <input class="form-check-input" type="checkbox" role="switch" id="bedroom-light"
+                        style="box-shadow: 1px 1px 50px rgb(137,137,137);" />
+                      <label class="form-check-label" for="bedroom-light">Hálószoba</label>
+                    </div>
+                    <div class="form-check form-switch w-50 mx-auto">
+                      <input class="form-check-input" type="checkbox" role="switch" id="outside-light"
+                        style="box-shadow: 1px 1px 50px rgb(137,137,137);" />
+                      <label class="form-check-label" for="outside-light">Kinti</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title">RGB Led színválasztás</h5>
+                    <input type="color" id="color-picker" name="favcolor" value="#ff0000" style="width: 100px;">
+                    <div class="form-check form-switch w-50 mx-auto">
+                      <input class="form-check-input" type="checkbox" role="switch" id="pulse-led"
+                        style="box-shadow: 1px 1px 50px rgb(137,137,137);" />
+                      <label class="form-check-label" for="pulse-led">Pulzálás</label>
+                    </div>
+                    <div class="form-check form-switch w-50 mx-auto">
+                      <input class="form-check-input" type="checkbox" role="switch" id="changing-color"
+                        style="box-shadow: 1px 1px 50px rgb(137,137,137);" />
+                      <label class="form-check-label" for="changing-color">Folyamatos színváltás</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+        <div class="container text-center" style="margin-top: 10px;">
+          <div class="row row-cols-1 row-cols-md-2 g-2" style="margin-top: 2px;">
+            <div class="col">
+              <div class="card">
+                <div class="card-body" style="padding: 0rem;">
+                  <p><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> Hő grafikon</p>
+                  <div id="chart-temperature" class="chart-container"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card">
+                <div class="card-body" style="padding: 0rem;">
+
+                  <p><i class="fas fa-angle-double-down" style="color:#e1e437;"></i> Nyomás grafikon</p>
+                  <div id="chart-pressure" class="chart-container"></div>
+
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card">
+                <div class="card-body" style="padding: 0rem;">
+
+                  <p><i class="fas fa-tint" style="color:#00add6;"></i> Páratartalom grafikon</p>
+                  <div id="chart-humidity" class="chart-container"></div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+      </div>
+    </div>
+  </div>
+  <!-- MDB -->
+  <script type="text/javascript" src="js/mdb.min.js"></script>
+  <!-- Custom scripts -->
+  <script type="text/javascript"></script>
+</body>
+
+</html>
